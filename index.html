@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FocusFlow Seconde</title>
   <style>
     body {
@@ -12,35 +12,72 @@
       margin: 0;
       padding: 0;
     }
+
     .container {
-      max-width: 900px;
+      max-width: 950px;
       margin: auto;
       padding: 40px 20px;
     }
+
     h1 {
       color: #38bdf8;
       font-size: 42px;
+      margin-bottom: 10px;
     }
+
     h2 {
       color: #93c5fd;
-      margin-top: 30px;
+      margin-top: 0;
     }
+
     .box {
       background: #1e293b;
       border-radius: 14px;
-      padding: 20px;
+      padding: 24px;
       margin-top: 20px;
     }
-    a.button {
+
+    .button {
       display: inline-block;
-      margin-top: 15px;
+      margin: 8px 8px 0 0;
       padding: 12px 18px;
       background: #38bdf8;
       color: #0f172a;
       text-decoration: none;
       font-weight: bold;
       border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
     }
+
+    .button.secondary {
+      background: #64748b;
+      color: white;
+    }
+
+    .button.choice {
+      display: block;
+      width: 100%;
+      text-align: left;
+      margin-top: 10px;
+    }
+
+    #app {
+      margin-top: 24px;
+    }
+
+    .small {
+      color: #cbd5e1;
+      font-size: 14px;
+    }
+
+    .score {
+      font-size: 20px;
+      font-weight: bold;
+      color: #38bdf8;
+    }
+
     ul {
       line-height: 1.8;
     }
@@ -49,55 +86,295 @@
 <body>
   <div class="container">
     <h1>FocusFlow Seconde</h1>
-    <p>Application de révision pour les élèves de seconde.</p>
+    <p>Application de révision niveau seconde.</p>
 
     <div class="box">
       <h2>Présentation</h2>
       <p>
-        FocusFlow Seconde est une application Python avec interface graphique.
-        L'utilisateur choisit une matière, répond à un quiz et obtient un score final.
+        Choisis une matière, réponds aux questions et vois ton score final.
       </p>
     </div>
 
-    <div class="box">
-      <h2>Fonctionnalités</h2>
-      <ul>
-        <li>Accueil interactif</li>
-        <li>Choix de matière</li>
-        <li>Questions de quiz</li>
-        <li>Score final</li>
-        <li>Bouton recommencer</li>
-      </ul>
-    </div>
+    <div id="app" class="box"></div>
 
     <div class="box">
-      <h2>Technologies utilisées</h2>
-      <ul>
-        <li>Python</li>
-        <li>Tkinter</li>
-        <li>HTML / CSS</li>
-      </ul>
+      <h2>Voir le code</h2>
+      <p>
+        <a class="button" href="https://github.com/billieancellehansen-maker/focusflow-seconde" target="_blank">
+          Voir le code sur GitHub
+        </a>
+      </p>
     </div>
 
-    <div class="box">
-     <div class="box">
-  <h2>Téléchargement</h2>
-  <p>Le code source est disponible sur GitHub.</p>
-  <p>
-    <a class="button" href="https://github.com/billieancellehansen-maker/focusflow-seconde">
-      Voir le code
-    </a>
-  </p>
-  <p>
-    <a class="button" href="#">
-      Téléchargement bientôt disponible
-    </a>
-  </p>
-</div>
     <div class="box">
       <h2>Auteur</h2>
       <p>Billie</p>
     </div>
   </div>
+
+  <script>
+    const quizData = {
+      "Maths": [
+        {
+          question: "Quelle est la forme générale d’une fonction cube ?",
+          choices: ["f(x)=x³", "f(x)=x²", "f(x)=1/x"],
+          answer: "f(x)=x³"
+        },
+        {
+          question: "Quelle est l’image de 2 par la fonction cube ?",
+          choices: ["4", "6", "8"],
+          answer: "8"
+        },
+        {
+          question: "Quelle est l’image de -3 par la fonction cube ?",
+          choices: ["-27", "9", "-9"],
+          answer: "-27"
+        },
+        {
+          question: "Quelle est la forme générale d’une fonction carré ?",
+          choices: ["f(x)=x²", "f(x)=x³", "f(x)=2x"],
+          answer: "f(x)=x²"
+        },
+        {
+          question: "Quelle est l’image de -4 par la fonction carré ?",
+          choices: ["-16", "8", "16"],
+          answer: "16"
+        },
+        {
+          question: "Comment s’appelle la courbe représentative d’une fonction carré ?",
+          choices: ["Une parabole", "Une droite", "Un cercle"],
+          answer: "Une parabole"
+        },
+        {
+          question: "Comment s’appelle un solide qui a 6 faces carrées ?",
+          choices: ["Un cube", "Un pavé droit", "Une pyramide"],
+          answer: "Un cube"
+        },
+        {
+          question: "Quelle est la formule de l’aire d’un carré de côté c ?",
+          choices: ["c²", "4c", "c³"],
+          answer: "c²"
+        },
+        {
+          question: "Quelle est la formule du volume d’un cube de côté c ?",
+          choices: ["c³", "c²", "6c"],
+          answer: "c³"
+        },
+        {
+          question: "Quelle est la somme des angles d’un triangle ?",
+          choices: ["180°", "90°", "360°"],
+          answer: "180°"
+        }
+      ],
+
+      "Français": [
+        {
+          question: "La poésie appartient à quel domaine ?",
+          choices: ["La littérature", "La géométrie", "La chimie"],
+          answer: "La littérature"
+        },
+        {
+          question: "Un vers de 12 syllabes s’appelle comment ?",
+          choices: ["Un alexandrin", "Un octosyllabe", "Un sonnet"],
+          answer: "Un alexandrin"
+        },
+        {
+          question: "Un sonnet contient combien de vers ?",
+          choices: ["10", "12", "14"],
+          answer: "14"
+        },
+        {
+          question: "Au théâtre, une didascalie sert à quoi ?",
+          choices: ["Donner des indications de jeu", "Raconter la fin", "Faire une division"],
+          answer: "Donner des indications de jeu"
+        },
+        {
+          question: "Quand un personnage parle seul sur scène, c’est :",
+          choices: ["Un monologue", "Un dialogue", "Une strophe"],
+          answer: "Un monologue"
+        },
+        {
+          question: "Une métaphore est :",
+          choices: ["Une comparaison sans outil de comparaison", "Une répétition", "Une date historique"],
+          answer: "Une comparaison sans outil de comparaison"
+        },
+        {
+          question: "Le théâtre est d’abord conçu pour :",
+          choices: ["Être joué sur scène", "Être calculé", "Être mesuré"],
+          answer: "Être joué sur scène"
+        },
+        {
+          question: "La littérature permet surtout de :",
+          choices: ["Exprimer des idées et des émotions", "Mesurer une distance", "Tracer une figure"],
+          answer: "Exprimer des idées et des émotions"
+        },
+        {
+          question: "Dans un poème, des sons qui se répètent en fin de vers sont :",
+          choices: ["Des rimes", "Des didascalies", "Des angles"],
+          answer: "Des rimes"
+        },
+        {
+          question: "Une scène appartient au genre :",
+          choices: ["Théâtral", "Scientifique", "Mathématique"],
+          answer: "Théâtral"
+        }
+      ],
+
+      "Histoire-Géo-EMC": [
+        {
+          question: "En quelle année commence la Révolution française ?",
+          choices: ["1789", "1815", "1492"],
+          answer: "1789"
+        },
+        {
+          question: "La France est aujourd’hui une :",
+          choices: ["République", "Monarchie absolue", "Empire"],
+          answer: "République"
+        },
+        {
+          question: "Quelle est la capitale de la France ?",
+          choices: ["Paris", "Lyon", "Marseille"],
+          answer: "Paris"
+        },
+        {
+          question: "En EMC, un citoyen possède :",
+          choices: ["Des droits et des devoirs", "Seulement des devoirs", "Aucun droit"],
+          answer: "Des droits et des devoirs"
+        },
+        {
+          question: "Qui peut voter en France lors des élections nationales ?",
+          choices: ["Les citoyens majeurs", "Tous les collégiens", "Les touristes"],
+          answer: "Les citoyens majeurs"
+        },
+        {
+          question: "L’Europe est :",
+          choices: ["Un continent", "Un pays", "Une ville"],
+          answer: "Un continent"
+        },
+        {
+          question: "En géographie, le climat dépend notamment de :",
+          choices: ["La latitude", "Le prénom", "Le téléphone"],
+          answer: "La latitude"
+        },
+        {
+          question: "Le développement durable consiste à :",
+          choices: ["Protéger les ressources pour l’avenir", "Polluer davantage", "Supprimer les lois"],
+          answer: "Protéger les ressources pour l’avenir"
+        },
+        {
+          question: "Le maire dirige :",
+          choices: ["Une commune", "Un continent", "Une mer"],
+          answer: "Une commune"
+        },
+        {
+          question: "La liberté en EMC signifie surtout :",
+          choices: ["Pouvoir faire des choix dans le respect des lois", "Faire n’importe quoi", "Ne jamais obéir"],
+          answer: "Pouvoir faire des choix dans le respect des lois"
+        }
+      ]
+    };
+
+    let selectedSubject = null;
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    const app = document.getElementById("app");
+
+    function showHome() {
+      app.innerHTML = `
+        <h2>Bienvenue</h2>
+        <p>Choisis une matière pour commencer ton quiz.</p>
+        <button class="button" onclick="startQuiz('Maths')">Maths</button>
+        <button class="button" onclick="startQuiz('Français')">Français</button>
+        <button class="button" onclick="startQuiz('Histoire-Géo-EMC')">Histoire-Géo-EMC</button>
+      `;
+    }
+
+    function startQuiz(subject) {
+      selectedSubject = subject;
+      currentQuestionIndex = 0;
+      score = 0;
+      showQuestion();
+    }
+
+    function showQuestion() {
+      const questions = quizData[selectedSubject];
+      const q = questions[currentQuestionIndex];
+
+      let choicesHtml = "";
+      q.choices.forEach(choice => {
+        const safeChoice = choice.replace(/'/g, "\\'");
+        choicesHtml += `
+          <button class="button choice" onclick="checkAnswer('${safeChoice}')">
+            ${choice}
+          </button>
+        `;
+      });
+
+      app.innerHTML = `
+        <h2>${selectedSubject}</h2>
+        <p class="small">Question ${currentQuestionIndex + 1} / ${questions.length}</p>
+        <p class="score">Score : ${score}</p>
+        <p><strong>${q.question}</strong></p>
+        ${choicesHtml}
+        <button class="button secondary" onclick="showHome()">Retour</button>
+      `;
+    }
+
+    function checkAnswer(choice) {
+      const questions = quizData[selectedSubject];
+      const q = questions[currentQuestionIndex];
+
+      let message = "";
+      if (choice === q.answer) {
+        score++;
+        message = "✅ Bonne réponse !";
+      } else {
+        message = `❌ Mauvaise réponse. La bonne réponse était : ${q.answer}`;
+      }
+
+      app.innerHTML = `
+        <h2>${selectedSubject}</h2>
+        <p class="score">Score : ${score}</p>
+        <p>${message}</p>
+        <button class="button" onclick="nextQuestion()">Question suivante</button>
+      `;
+    }
+
+    function nextQuestion() {
+      currentQuestionIndex++;
+      const questions = quizData[selectedSubject];
+
+      if (currentQuestionIndex < questions.length) {
+        showQuestion();
+      } else {
+        showResult();
+      }
+    }
+
+    function showResult() {
+      const total = quizData[selectedSubject].length;
+      let finalMessage = "";
+
+      if (score === total) {
+        finalMessage = "🏆 Incroyable ! Sans faute !";
+      } else if (score >= 7) {
+        finalMessage = "🎉 Très bon travail !";
+      } else if (score >= 5) {
+        finalMessage = "👍 Bon travail !";
+      } else {
+        finalMessage = "💪 Continue, tu vas progresser !";
+      }
+
+      app.innerHTML = `
+        <h2>Quiz terminé</h2>
+        <p class="score">Tu as obtenu ${score} / ${total}</p>
+        <p>${finalMessage}</p>
+        <button class="button" onclick="showHome()">Recommencer</button>
+      `;
+    }
+
+    showHome();
+  </script>
 </body>
 </html>
