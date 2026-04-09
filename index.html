@@ -14,7 +14,7 @@
     }
 
     .container {
-      max-width: 950px;
+      max-width: 980px;
       margin: auto;
       padding: 40px 20px;
     }
@@ -63,6 +63,16 @@
       color: white;
     }
 
+    .danger {
+      background: #f59e0b;
+      color: #0f172a;
+    }
+
+    .success {
+      background: #22c55e;
+      color: #0f172a;
+    }
+
     .score {
       color: #38bdf8;
       font-weight: bold;
@@ -78,60 +88,86 @@
       margin-top: 20px;
     }
 
-    ul {
-      line-height: 1.8;
-    }
-
-    .reward {
+    .reward-box {
       margin-top: 20px;
       padding: 18px;
-      border-radius: 12px;
-      background: #0b5f7a;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #1d4ed8, #7c3aed);
       color: white;
-    }
-
-    .reward-title {
-      font-size: 22px;
-      font-weight: bold;
-      color: #facc15;
-      margin-bottom: 10px;
+      border: 2px solid #facc15;
     }
 
     .badge {
       display: inline-block;
-      background: #facc15;
-      color: #0f172a;
-      padding: 8px 14px;
+      margin-top: 10px;
+      padding: 10px 16px;
       border-radius: 999px;
       font-weight: bold;
-      margin-top: 10px;
+      background: #facc15;
+      color: #0f172a;
+      font-size: 18px;
     }
 
-    .secret-box {
-      margin-top: 15px;
-      background: #111827;
+    .hint-box {
+      background: #0f3b50;
       border: 2px dashed #38bdf8;
-      padding: 14px;
+      padding: 12px;
       border-radius: 10px;
-      color: #e0f2fe;
+      margin-top: 15px;
+      color: #dbeafe;
     }
 
-    .champion {
-      margin-top: 15px;
-      font-size: 26px;
+    .game-info {
+      margin: 15px 0;
+      font-size: 18px;
+      color: #f8fafc;
+    }
+
+    canvas {
+      background: #0b1220;
+      border: 3px solid #38bdf8;
+      border-radius: 12px;
+      display: block;
+      margin-top: 20px;
+    }
+
+    .coin {
+      color: #facc15;
       font-weight: bold;
-      color: #f472b6;
+    }
+
+    .topbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 12px;
+      margin-bottom: 12px;
+    }
+
+    .pill {
+      background: #0f3b50;
+      border-radius: 999px;
+      padding: 10px 14px;
+      color: white;
+      font-weight: bold;
+    }
+
+    ul {
+      line-height: 1.7;
     }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>FocusFlow Seconde</h1>
-    <p>Application de révision niveau seconde.</p>
+    <p>Application de révision niveau seconde avec mini-jeu bonus.</p>
 
     <div class="box">
       <h2>Présentation</h2>
-      <p>Choisis une matière, réponds aux questions et découvre ton score final.</p>
+      <p>
+        Réponds au quiz, débloque le jeu serpent si tu obtiens au moins 5/10,
+        puis collecte des pièces pour gagner des aides.
+      </p>
     </div>
 
     <div id="app" class="box"></div>
@@ -196,16 +232,24 @@
     let selectedSubject = null;
     let currentQuestionIndex = 0;
     let score = 0;
+    let hintTokens = 0;
+    let currentChoices = [];
+    let gameUnlocked = false;
 
     const app = document.getElementById("app");
 
     function showHome() {
       app.innerHTML = `
         <h2>Bienvenue</h2>
+        <div class="topbar">
+          <div class="pill">💡 Aides : ${hintTokens}</div>
+          <div class="pill">🎮 Jeu serpent : ${gameUnlocked ? "débloqué" : "bloqué"}</div>
+        </div>
         <p>Choisis une matière pour commencer ton quiz.</p>
         <button class="button" onclick="startQuiz('Maths')">Maths</button>
         <button class="button" onclick="startQuiz('Français')">Français</button>
         <button class="button" onclick="startQuiz('Histoire-Géo-EMC')">Histoire-Géo-EMC</button>
+        ${gameUnlocked ? `<button class="button success" onclick="showSnakeGame()">Jouer au serpent</button>` : ""}
       `;
     }
 
@@ -213,7 +257,13 @@
       selectedSubject = subject;
       currentQuestionIndex = 0;
       score = 0;
+      prepareQuestion();
       showQuestion();
+    }
+
+    function prepareQuestion() {
+      const q = quizData[selectedSubject][currentQuestionIndex];
+      currentChoices = [...q.choices];
     }
 
     function showQuestion() {
@@ -221,23 +271,41 @@
       const q = questions[currentQuestionIndex];
 
       let choicesHtml = "";
-      q.choices.forEach(choice => {
+      currentChoices.forEach(choice => {
         const safeChoice = choice.replace(/'/g, "\\'");
         choicesHtml += `
-          <button class="button choice" onclick="checkAnswer('${safeChoice}')">
-            ${choice}
-          </button>
+          <button class="button choice" onclick="checkAnswer('${safeChoice}')">${choice}</button>
         `;
       });
 
       app.innerHTML = `
         <h2>${selectedSubject}</h2>
-        <p class="small">Question ${currentQuestionIndex + 1} / ${questions.length}</p>
-        <p class="score">Score : ${score}</p>
+        <div class="topbar">
+          <div class="pill">Question ${currentQuestionIndex + 1} / ${questions.length}</div>
+          <div class="pill">Score : ${score}</div>
+          <div class="pill">💡 Aides : ${hintTokens}</div>
+        </div>
         <p><strong>${q.question}</strong></p>
         ${choicesHtml}
         <button class="button secondary" onclick="showHome()">Retour</button>
+        ${hintTokens > 0 ? `<button class="button danger" onclick="useHint()">Utiliser une aide</button>` : ""}
       `;
+    }
+
+    function useHint() {
+      const q = quizData[selectedSubject][currentQuestionIndex];
+
+      if (hintTokens <= 0) return;
+      if (currentChoices.length <= 2) return;
+
+      const wrongChoices = currentChoices.filter(choice => choice !== q.answer);
+      if (wrongChoices.length === 0) return;
+
+      const toRemove = wrongChoices[Math.floor(Math.random() * wrongChoices.length)];
+      currentChoices = currentChoices.filter(choice => choice !== toRemove);
+      hintTokens--;
+
+      showQuestion();
     }
 
     function checkAnswer(choice) {
@@ -260,44 +328,59 @@
       `;
     }
 
-    function getReward(total, score) {
+    function nextQuestion() {
+      currentQuestionIndex++;
+      const questions = quizData[selectedSubject];
+
+      if (currentQuestionIndex < questions.length) {
+        prepareQuestion();
+        showQuestion();
+      } else {
+        showResult();
+      }
+    }
+
+    function getRewardHtml(total, score) {
       if (score < 5) {
         return `
           <p>💪 Continue, tu vas progresser !</p>
-          <p class="small">Pas de surprise cette fois, mais tu peux recommencer pour en débloquer une.</p>
+          <p class="small">Tu n’as pas débloqué le mini-jeu cette fois.</p>
         `;
       }
 
-      if (score === 5 || score === 6) {
+      gameUnlocked = true;
+
+      if (score >= 5 && score <= 7) {
         return `
-          <div class="reward">
-            <div class="reward-title">🎁 Surprise débloquée</div>
-            <p>Tu as débloqué la phrase secrète de FocusFlow :</p>
-            <div class="secret-box">“Le progrès n’est pas magique, il se construit réponse après réponse.”</div>
+          <div class="reward-box">
+            <h3>🎁 Surprise débloquée</h3>
+            <p>Tu as réussi assez de questions pour débloquer le mini-jeu serpent.</p>
+            <div class="badge">Badge Réviseuse</div>
+            <p class="small">Dans le jeu, 10 pièces = 1 aide pour le quiz.</p>
+            <button class="button success" onclick="showSnakeGame()">Jouer au serpent</button>
           </div>
         `;
       }
 
-      if (score === 7 || score === 8) {
+      if (score >= 8 && score <= 9) {
         return `
-          <div class="reward">
-            <div class="reward-title">🌟 Badge débloqué</div>
-            <p>Tu as gagné le badge spécial :</p>
-            <div class="badge">Exploratrice du savoir</div>
-            <div class="secret-box">Mission bonus : montre ce badge à ton prof.</div>
+          <div class="reward-box">
+            <h3>🌟 Surprise débloquée</h3>
+            <p>Excellent score ! Tu débloques le mini-jeu serpent.</p>
+            <div class="badge">Badge Championne</div>
+            <p class="small">Dans le jeu, 10 pièces = 1 aide pour le quiz.</p>
+            <button class="button success" onclick="showSnakeGame()">Jouer au serpent</button>
           </div>
         `;
       }
 
       return `
-        <div class="reward">
-          <div class="reward-title">👑 Mode Champion débloqué</div>
-          <p>Tu as presque tout réussi. Tu débloques la surprise ultime :</p>
-          <div class="champion">“Reine de FocusFlow”</div>
-          <div class="secret-box">
-            Code secret du jour : <strong>FOCUS-POWER-10</strong><br>
-            Bonus symbolique : tu peux te considérer comme la boss du quiz 😎
-          </div>
+        <div class="reward-box">
+          <h3>👑 Surprise ultime</h3>
+          <p>Sans faute ! Tu débloques le mini-jeu serpent en mode championne.</p>
+          <div class="badge">Badge Championne Play</div>
+          <p class="small">Dans le jeu, 10 pièces = 1 aide pour le quiz.</p>
+          <button class="button success" onclick="showSnakeGame()">Jouer au serpent</button>
         </div>
       `;
     }
@@ -308,23 +391,148 @@
 
       if (score === total) {
         finalMessage = "🏆 Incroyable ! Sans faute !";
-      } else if (score >= 7) {
+      } else if (score >= 8) {
         finalMessage = "🎉 Très bon travail !";
       } else if (score >= 5) {
         finalMessage = "👍 Bon travail !";
       } else {
-        finalMessage = "💪 Continue, tu vas progresser !";
+        finalMessage = "💪 Continue !";
       }
 
-      const rewardHtml = getReward(total, score);
+      const rewardHtml = getRewardHtml(total, score);
 
       app.innerHTML = `
         <h2>Quiz terminé</h2>
         <p class="score">Tu as obtenu ${score} / ${total}</p>
         <p>${finalMessage}</p>
         ${rewardHtml}
-        <button class="button" onclick="showHome()">Recommencer</button>
+        <button class="button" onclick="showHome()">Retour à l’accueil</button>
       `;
+    }
+
+    function showSnakeGame() {
+      app.innerHTML = `
+        <h2>Mini-jeu serpent</h2>
+        <p>Déplace le serpent avec les flèches du clavier.</p>
+        <p class="game-info">🪙 Pièces gagnées dans cette partie : <span id="coins" class="coin">0</span></p>
+        <p class="game-info">💡 Aides disponibles : <span id="hints">${hintTokens}</span></p>
+        <p class="small">Toutes les 10 pièces, tu gagnes 1 aide pour supprimer une mauvaise réponse dans le quiz.</p>
+        <canvas id="gameCanvas" width="420" height="420"></canvas>
+        <br>
+        <button class="button secondary" onclick="showHome()">Retour à l’accueil</button>
+        <button class="button" onclick="showSnakeGame()">Rejouer</button>
+      `;
+
+      startSnake();
+    }
+
+    function startSnake() {
+      const canvas = document.getElementById("gameCanvas");
+      const ctx = canvas.getContext("2d");
+      const box = 20;
+
+      let snake = [{ x: 10 * box, y: 10 * box }];
+      let direction = "RIGHT";
+      let coin = randomPosition();
+      let coinsCollected = 0;
+
+      function randomPosition() {
+        return {
+          x: Math.floor(Math.random() * 21) * box,
+          y: Math.floor(Math.random() * 21) * box
+        };
+      }
+
+      function drawBackground() {
+        ctx.fillStyle = "#0b1220";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
+
+      function drawSnake() {
+        for (let i = 0; i < snake.length; i++) {
+          ctx.fillStyle = i === 0 ? "#22c55e" : "#86efac";
+          ctx.fillRect(snake[i].x, snake[i].y, box - 2, box - 2);
+        }
+      }
+
+      function drawCoin() {
+        ctx.fillStyle = "#facc15";
+        ctx.beginPath();
+        ctx.arc(coin.x + box / 2, coin.y + box / 2, 7, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      function updateInfo() {
+        document.getElementById("coins").textContent = coinsCollected;
+        document.getElementById("hints").textContent = hintTokens;
+      }
+
+      function collision(head, array) {
+        for (let i = 0; i < array.length; i++) {
+          if (head.x === array[i].x && head.y === array[i].y) {
+            return true;
+          }
+        }
+        return false;
+      }
+
+      function moveSnake() {
+        let headX = snake[0].x;
+        let headY = snake[0].y;
+
+        if (direction === "LEFT") headX -= box;
+        if (direction === "UP") headY -= box;
+        if (direction === "RIGHT") headX += box;
+        if (direction === "DOWN") headY += box;
+
+        if (
+          headX < 0 ||
+          headY < 0 ||
+          headX >= canvas.width ||
+          headY >= canvas.height ||
+          collision({ x: headX, y: headY }, snake)
+        ) {
+          clearInterval(game);
+          alert("Partie terminée ! Tu as gagné " + coinsCollected + " pièce(s).");
+          return;
+        }
+
+        const newHead = { x: headX, y: headY };
+
+        if (headX === coin.x && headY === coin.y) {
+          coinsCollected++;
+          if (coinsCollected % 10 === 0) {
+            hintTokens++;
+          }
+          coin = randomPosition();
+          updateInfo();
+        } else {
+          snake.pop();
+        }
+
+        snake.unshift(newHead);
+
+        drawBackground();
+        drawCoin();
+        drawSnake();
+      }
+
+      function changeDirection(event) {
+        const key = event.key;
+        if ((key === "ArrowLeft" || key === "q") && direction !== "RIGHT") direction = "LEFT";
+        else if ((key === "ArrowUp" || key === "z") && direction !== "DOWN") direction = "UP";
+        else if ((key === "ArrowRight" || key === "d") && direction !== "LEFT") direction = "RIGHT";
+        else if ((key === "ArrowDown" || key === "s") && direction !== "UP") direction = "DOWN";
+      }
+
+      document.onkeydown = changeDirection;
+
+      drawBackground();
+      drawCoin();
+      drawSnake();
+      updateInfo();
+
+      const game = setInterval(moveSnake, 130);
     }
 
     showHome();
