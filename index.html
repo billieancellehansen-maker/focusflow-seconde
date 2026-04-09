@@ -51,11 +51,6 @@
       font-size: 16px;
     }
 
-    .button.secondary {
-      background: #64748b;
-      color: white;
-    }
-
     .button.choice {
       display: block;
       width: 100%;
@@ -63,8 +58,15 @@
       margin-top: 10px;
     }
 
-    #app {
-      margin-top: 24px;
+    .secondary {
+      background: #64748b;
+      color: white;
+    }
+
+    .score {
+      color: #38bdf8;
+      font-weight: bold;
+      font-size: 22px;
     }
 
     .small {
@@ -72,14 +74,53 @@
       font-size: 14px;
     }
 
-    .score {
-      font-size: 20px;
-      font-weight: bold;
-      color: #38bdf8;
+    #app {
+      margin-top: 20px;
     }
 
     ul {
       line-height: 1.8;
+    }
+
+    .reward {
+      margin-top: 20px;
+      padding: 18px;
+      border-radius: 12px;
+      background: #0b5f7a;
+      color: white;
+    }
+
+    .reward-title {
+      font-size: 22px;
+      font-weight: bold;
+      color: #facc15;
+      margin-bottom: 10px;
+    }
+
+    .badge {
+      display: inline-block;
+      background: #facc15;
+      color: #0f172a;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    .secret-box {
+      margin-top: 15px;
+      background: #111827;
+      border: 2px dashed #38bdf8;
+      padding: 14px;
+      border-radius: 10px;
+      color: #e0f2fe;
+    }
+
+    .champion {
+      margin-top: 15px;
+      font-size: 26px;
+      font-weight: bold;
+      color: #f472b6;
     }
   </style>
 </head>
@@ -90,9 +131,7 @@
 
     <div class="box">
       <h2>Présentation</h2>
-      <p>
-        Choisis une matière, réponds aux questions et vois ton score final.
-      </p>
+      <p>Choisis une matière, réponds aux questions et découvre ton score final.</p>
     </div>
 
     <div id="app" class="box"></div>
@@ -115,162 +154,42 @@
   <script>
     const quizData = {
       "Maths": [
-        {
-          question: "Quelle est la forme générale d’une fonction cube ?",
-          choices: ["f(x)=x³", "f(x)=x²", "f(x)=1/x"],
-          answer: "f(x)=x³"
-        },
-        {
-          question: "Quelle est l’image de 2 par la fonction cube ?",
-          choices: ["4", "6", "8"],
-          answer: "8"
-        },
-        {
-          question: "Quelle est l’image de -3 par la fonction cube ?",
-          choices: ["-27", "9", "-9"],
-          answer: "-27"
-        },
-        {
-          question: "Quelle est la forme générale d’une fonction carré ?",
-          choices: ["f(x)=x²", "f(x)=x³", "f(x)=2x"],
-          answer: "f(x)=x²"
-        },
-        {
-          question: "Quelle est l’image de -4 par la fonction carré ?",
-          choices: ["-16", "8", "16"],
-          answer: "16"
-        },
-        {
-          question: "Comment s’appelle la courbe représentative d’une fonction carré ?",
-          choices: ["Une parabole", "Une droite", "Un cercle"],
-          answer: "Une parabole"
-        },
-        {
-          question: "Comment s’appelle un solide qui a 6 faces carrées ?",
-          choices: ["Un cube", "Un pavé droit", "Une pyramide"],
-          answer: "Un cube"
-        },
-        {
-          question: "Quelle est la formule de l’aire d’un carré de côté c ?",
-          choices: ["c²", "4c", "c³"],
-          answer: "c²"
-        },
-        {
-          question: "Quelle est la formule du volume d’un cube de côté c ?",
-          choices: ["c³", "c²", "6c"],
-          answer: "c³"
-        },
-        {
-          question: "Quelle est la somme des angles d’un triangle ?",
-          choices: ["180°", "90°", "360°"],
-          answer: "180°"
-        }
+        { question: "Quelle est la forme d’une fonction cube ?", choices: ["f(x)=x³", "f(x)=x²", "f(x)=2x"], answer: "f(x)=x³" },
+        { question: "Quelle est l’image de 2 par la fonction cube ?", choices: ["4", "6", "8"], answer: "8" },
+        { question: "Quelle est l’image de -3 par la fonction cube ?", choices: ["-27", "-9", "9"], answer: "-27" },
+        { question: "Quelle est la forme d’une fonction carré ?", choices: ["f(x)=x²", "f(x)=x³", "f(x)=1/x"], answer: "f(x)=x²" },
+        { question: "Quelle est l’image de -4 par la fonction carré ?", choices: ["-16", "16", "8"], answer: "16" },
+        { question: "Comment s’appelle la courbe d’une fonction carré ?", choices: ["Parabole", "Droite", "Cercle"], answer: "Parabole" },
+        { question: "Quelle est la formule de l’aire d’un carré de côté c ?", choices: ["c²", "4c", "c³"], answer: "c²" },
+        { question: "Quelle est la formule du volume d’un cube de côté c ?", choices: ["c³", "c²", "6c"], answer: "c³" },
+        { question: "Combien de côtés a un triangle ?", choices: ["3", "4", "5"], answer: "3" },
+        { question: "Quelle est la somme des angles d’un triangle ?", choices: ["180°", "90°", "360°"], answer: "180°" }
       ],
 
       "Français": [
-        {
-          question: "La poésie appartient à quel domaine ?",
-          choices: ["La littérature", "La géométrie", "La chimie"],
-          answer: "La littérature"
-        },
-        {
-          question: "Un vers de 12 syllabes s’appelle comment ?",
-          choices: ["Un alexandrin", "Un octosyllabe", "Un sonnet"],
-          answer: "Un alexandrin"
-        },
-        {
-          question: "Un sonnet contient combien de vers ?",
-          choices: ["10", "12", "14"],
-          answer: "14"
-        },
-        {
-          question: "Au théâtre, une didascalie sert à quoi ?",
-          choices: ["Donner des indications de jeu", "Raconter la fin", "Faire une division"],
-          answer: "Donner des indications de jeu"
-        },
-        {
-          question: "Quand un personnage parle seul sur scène, c’est :",
-          choices: ["Un monologue", "Un dialogue", "Une strophe"],
-          answer: "Un monologue"
-        },
-        {
-          question: "Une métaphore est :",
-          choices: ["Une comparaison sans outil de comparaison", "Une répétition", "Une date historique"],
-          answer: "Une comparaison sans outil de comparaison"
-        },
-        {
-          question: "Le théâtre est d’abord conçu pour :",
-          choices: ["Être joué sur scène", "Être calculé", "Être mesuré"],
-          answer: "Être joué sur scène"
-        },
-        {
-          question: "La littérature permet surtout de :",
-          choices: ["Exprimer des idées et des émotions", "Mesurer une distance", "Tracer une figure"],
-          answer: "Exprimer des idées et des émotions"
-        },
-        {
-          question: "Dans un poème, des sons qui se répètent en fin de vers sont :",
-          choices: ["Des rimes", "Des didascalies", "Des angles"],
-          answer: "Des rimes"
-        },
-        {
-          question: "Une scène appartient au genre :",
-          choices: ["Théâtral", "Scientifique", "Mathématique"],
-          answer: "Théâtral"
-        }
+        { question: "La poésie appartient à quel domaine ?", choices: ["La littérature", "La géométrie", "La physique"], answer: "La littérature" },
+        { question: "Un vers de 12 syllabes s’appelle :", choices: ["Un alexandrin", "Un octosyllabe", "Un sonnet"], answer: "Un alexandrin" },
+        { question: "Un sonnet contient combien de vers ?", choices: ["10", "12", "14"], answer: "14" },
+        { question: "Une didascalie sert à :", choices: ["Donner des indications de jeu", "Raconter la fin", "Décrire une figure"], answer: "Donner des indications de jeu" },
+        { question: "Quand un personnage parle seul sur scène, c’est :", choices: ["Un monologue", "Un dialogue", "Une strophe"], answer: "Un monologue" },
+        { question: "Une métaphore est :", choices: ["Une comparaison sans outil", "Une répétition", "Une date"], answer: "Une comparaison sans outil" },
+        { question: "Le théâtre est d’abord conçu pour :", choices: ["Être joué sur scène", "Être calculé", "Être mesuré"], answer: "Être joué sur scène" },
+        { question: "La littérature permet surtout de :", choices: ["Exprimer des idées et des émotions", "Mesurer une distance", "Tracer une figure"], answer: "Exprimer des idées et des émotions" },
+        { question: "Des sons qui se répètent en fin de vers sont :", choices: ["Des rimes", "Des angles", "Des didascalies"], answer: "Des rimes" },
+        { question: "Une scène appartient au genre :", choices: ["Théâtral", "Scientifique", "Mathématique"], answer: "Théâtral" }
       ],
 
       "Histoire-Géo-EMC": [
-        {
-          question: "En quelle année commence la Révolution française ?",
-          choices: ["1789", "1815", "1492"],
-          answer: "1789"
-        },
-        {
-          question: "La France est aujourd’hui une :",
-          choices: ["République", "Monarchie absolue", "Empire"],
-          answer: "République"
-        },
-        {
-          question: "Quelle est la capitale de la France ?",
-          choices: ["Paris", "Lyon", "Marseille"],
-          answer: "Paris"
-        },
-        {
-          question: "En EMC, un citoyen possède :",
-          choices: ["Des droits et des devoirs", "Seulement des devoirs", "Aucun droit"],
-          answer: "Des droits et des devoirs"
-        },
-        {
-          question: "Qui peut voter en France lors des élections nationales ?",
-          choices: ["Les citoyens majeurs", "Tous les collégiens", "Les touristes"],
-          answer: "Les citoyens majeurs"
-        },
-        {
-          question: "L’Europe est :",
-          choices: ["Un continent", "Un pays", "Une ville"],
-          answer: "Un continent"
-        },
-        {
-          question: "En géographie, le climat dépend notamment de :",
-          choices: ["La latitude", "Le prénom", "Le téléphone"],
-          answer: "La latitude"
-        },
-        {
-          question: "Le développement durable consiste à :",
-          choices: ["Protéger les ressources pour l’avenir", "Polluer davantage", "Supprimer les lois"],
-          answer: "Protéger les ressources pour l’avenir"
-        },
-        {
-          question: "Le maire dirige :",
-          choices: ["Une commune", "Un continent", "Une mer"],
-          answer: "Une commune"
-        },
-        {
-          question: "La liberté en EMC signifie surtout :",
-          choices: ["Pouvoir faire des choix dans le respect des lois", "Faire n’importe quoi", "Ne jamais obéir"],
-          answer: "Pouvoir faire des choix dans le respect des lois"
-        }
+        { question: "En quelle année commence la Révolution française ?", choices: ["1789", "1815", "1492"], answer: "1789" },
+        { question: "La France est aujourd’hui une :", choices: ["République", "Monarchie absolue", "Empire"], answer: "République" },
+        { question: "Quelle est la capitale de la France ?", choices: ["Paris", "Lyon", "Marseille"], answer: "Paris" },
+        { question: "Un citoyen possède :", choices: ["Des droits et des devoirs", "Seulement des devoirs", "Aucun droit"], answer: "Des droits et des devoirs" },
+        { question: "Qui peut voter en France ?", choices: ["Les citoyens majeurs", "Les touristes", "Tous les enfants"], answer: "Les citoyens majeurs" },
+        { question: "L’Europe est :", choices: ["Un continent", "Un pays", "Une ville"], answer: "Un continent" },
+        { question: "Le climat dépend notamment de :", choices: ["La latitude", "Le prénom", "Le téléphone"], answer: "La latitude" },
+        { question: "Le développement durable consiste à :", choices: ["Protéger les ressources pour l’avenir", "Polluer davantage", "Supprimer les lois"], answer: "Protéger les ressources pour l’avenir" },
+        { question: "Le maire dirige :", choices: ["Une commune", "Un continent", "Un océan"], answer: "Une commune" },
+        { question: "La liberté signifie surtout :", choices: ["Pouvoir faire des choix dans le respect des lois", "Faire n’importe quoi", "Ne jamais obéir"], answer: "Pouvoir faire des choix dans le respect des lois" }
       ]
     };
 
@@ -341,15 +260,46 @@
       `;
     }
 
-    function nextQuestion() {
-      currentQuestionIndex++;
-      const questions = quizData[selectedSubject];
-
-      if (currentQuestionIndex < questions.length) {
-        showQuestion();
-      } else {
-        showResult();
+    function getReward(total, score) {
+      if (score < 5) {
+        return `
+          <p>💪 Continue, tu vas progresser !</p>
+          <p class="small">Pas de surprise cette fois, mais tu peux recommencer pour en débloquer une.</p>
+        `;
       }
+
+      if (score === 5 || score === 6) {
+        return `
+          <div class="reward">
+            <div class="reward-title">🎁 Surprise débloquée</div>
+            <p>Tu as débloqué la phrase secrète de FocusFlow :</p>
+            <div class="secret-box">“Le progrès n’est pas magique, il se construit réponse après réponse.”</div>
+          </div>
+        `;
+      }
+
+      if (score === 7 || score === 8) {
+        return `
+          <div class="reward">
+            <div class="reward-title">🌟 Badge débloqué</div>
+            <p>Tu as gagné le badge spécial :</p>
+            <div class="badge">Exploratrice du savoir</div>
+            <div class="secret-box">Mission bonus : montre ce badge à ton prof.</div>
+          </div>
+        `;
+      }
+
+      return `
+        <div class="reward">
+          <div class="reward-title">👑 Mode Champion débloqué</div>
+          <p>Tu as presque tout réussi. Tu débloques la surprise ultime :</p>
+          <div class="champion">“Reine de FocusFlow”</div>
+          <div class="secret-box">
+            Code secret du jour : <strong>FOCUS-POWER-10</strong><br>
+            Bonus symbolique : tu peux te considérer comme la boss du quiz 😎
+          </div>
+        </div>
+      `;
     }
 
     function showResult() {
@@ -366,10 +316,13 @@
         finalMessage = "💪 Continue, tu vas progresser !";
       }
 
+      const rewardHtml = getReward(total, score);
+
       app.innerHTML = `
         <h2>Quiz terminé</h2>
         <p class="score">Tu as obtenu ${score} / ${total}</p>
         <p>${finalMessage}</p>
+        ${rewardHtml}
         <button class="button" onclick="showHome()">Recommencer</button>
       `;
     }
